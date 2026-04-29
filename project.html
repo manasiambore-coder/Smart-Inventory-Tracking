@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Inventory Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="project.css">
+</head>
+<body>
+
+<!-- AMBIENT BACKGROUND ORBS -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- ── NAVIGATION ── -->
+<nav>
+  <div class="nav-logo">⬡ SmartInv</div>
+  <ul class="nav-links">
+    <li><a href="#dashboard">Dashboard</a></li>
+    <li><a href="#inventory">Inventory</a></li>
+    <li><a href="#ai-section">AI Analysis</a></li>
+    <li><a href="#demo">Demo Flow</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO SECTION ── -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">✦ Smart Inventory Management</div>
+    <h1><span class="hero-grad">Smart Inventory<br>Management System</span></h1>
+    <p class="hero-sub">Track, manage, and optimize your business inventory with smart insights — designed for small businesses that move fast.</p>
+    <a href="#inventory" class="btn-primary">Get Started →</a>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num" id="hero-total">0</div>
+        <div class="stat-label">Products</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="hero-low">0</div>
+        <div class="stat-label">Low Stock</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="hero-val">₹0</div>
+        <div class="stat-label">Total Value</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DASHBOARD SECTION ── -->
+<section id="dashboard">
+  <div class="section-header">
+    <div class="section-tag">⬡ Overview</div>
+    <div class="section-title">Dashboard</div>
+  </div>
+  <div class="dashboard-cards">
+    <div class="dash-card">
+      <div class="card-icon">📦</div>
+      <div class="card-label">Total Products</div>
+      <div class="card-value blue" id="d-total">0</div>
+      <div class="card-trend">items in inventory</div>
+    </div>
+    <div class="dash-card amber">
+      <div class="card-icon">⚠️</div>
+      <div class="card-label">Low Stock Items</div>
+      <div class="card-value amber" id="d-low">0</div>
+      <div class="card-trend">quantity &lt; 5</div>
+    </div>
+    <div class="dash-card green">
+      <div class="card-icon">💰</div>
+      <div class="card-label">Total Inventory Value</div>
+      <div class="card-value green" id="d-value">₹0</div>
+      <div class="card-trend">across all products</div>
+    </div>
+    <div class="dash-card purple">
+      <div class="card-icon">📊</div>
+      <div class="card-label">Avg. Product Value</div>
+      <div class="card-value purple" id="d-avg">₹0</div>
+      <div class="card-trend">per unit avg price</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── INVENTORY MANAGEMENT ── -->
+<section id="inventory">
+  <div class="section-header">
+    <div class="section-tag">⬡ Manage</div>
+    <div class="section-title">Inventory Management</div>
+  </div>
+  <div class="inv-grid">
+
+    <!-- ADD PRODUCT FORM -->
+    <div class="panel">
+      <div class="panel-title">➕ Add Product</div>
+      <div class="form-field">
+        <label>Product Name</label>
+        <input type="text" id="inp-name" placeholder="e.g. iPhone 15 Case" />
+      </div>
+      <div class="form-field">
+        <label>Quantity</label>
+        <input type="number" id="inp-qty" placeholder="e.g. 50" min="0" />
+      </div>
+      <div class="form-field">
+        <label>Price (₹)</label>
+        <input type="number" id="inp-price" placeholder="e.g. 499" min="0" step="0.01" />
+      </div>
+      <button class="btn-add" onclick="addProduct()">Add to Inventory</button>
+    </div>
+
+    <!-- PRODUCT TABLE -->
+    <div class="panel">
+      <div class="panel-title">📋 Product List</div>
+      <div class="search-row">
+        <input type="text" id="search-inp" placeholder="🔍  Search products…" oninput="renderTable()" />
+        <select id="filter-sel" onchange="renderTable()">
+          <option value="all">All Stock</option>
+          <option value="low">Low Stock</option>
+          <option value="ok">In Stock</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product Name</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Total</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="product-tbody"></tbody>
+        </table>
+        <div id="empty-msg" class="empty-state">No products yet. Add one above! 📦</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── AI ANALYSIS SECTION ── -->
+<section id="ai-section">
+  <div class="section-header">
+    <div class="section-tag">⬡ Intelligence</div>
+    <div class="section-title">AI Inventory Analysis</div>
+  </div>
+  <div class="ai-panel">
+    <div class="ai-header">
+      <div>
+        <p style="color:var(--text2);font-size:0.9rem;max-width:480px;">Get smart recommendations based on your current inventory data.</p>
+      </div>
+      <button class="btn-ai" id="ai-btn" onclick="runAnalysis()">
+        <span id="ai-spinner" class="ai-spinner"></span>
+        <span id="ai-btn-text">✦ Analyze Inventory</span>
+      </button>
+    </div>
+    <div class="ai-results" id="ai-results"></div>
+  </div>
+</section>
+
+<!-- ── FEATURES SECTION ── -->
+<section id="features">
+  <div class="section-header">
+    <div class="section-tag">⬡ Capabilities</div>
+    <div class="section-title">Features</div>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feat-icon">📦</div>
+      <div class="feat-title">Add, Edit & Delete</div>
+      <div class="feat-desc">Full CRUD operations on all products with instant visual feedback.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">📡</div>
+      <div class="feat-title">Real-time Tracking</div>
+      <div class="feat-desc">Dashboard updates live with every change.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🔔</div>
+      <div class="feat-title">Smart Alerts</div>
+      <div class="feat-desc">Automatic low-stock detection with highlighted rows.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">📊</div>
+      <div class="feat-title">Dashboard Analytics</div>
+      <div class="feat-desc">At-a-glance metrics for total value and item counts.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🤖</div>
+      <div class="feat-title">AI Insights</div>
+      <div class="feat-desc">One-click analysis for fast movers and dead stock.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🔍</div>
+      <div class="feat-title">Search & Filter</div>
+      <div class="feat-desc">Instantly search by name or filter by stock level.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DEMO FLOW ── -->
+<section id="demo">
+  <div class="section-header">
+    <div class="section-tag">⬡ Walkthrough</div>
+    <div class="section-title">Demo Flow</div>
+  </div>
+  <div class="demo-steps">
+    <div class="demo-step">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <div class="step-title">Add a Product</div>
+        <div class="step-desc">Enter product name, quantity and price. Click Add to Inventory — dashboard updates instantly.</div>
+      </div>
+    </div>
+    <div class="demo-step">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <div class="step-title">Update Stock</div>
+        <div class="step-desc">Click Edit on any row to modify details inline. All totals recalculate instantly.</div>
+      </div>
+    </div>
+    <div class="demo-step">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <div class="step-title">Detect Low Stock</div>
+        <div class="step-desc">Add a product with qty less than 5. Row turns red with Restock Needed badge automatically.</div>
+      </div>
+    </div>
+    <div class="demo-step">
+      <div class="step-num">04</div>
+      <div class="step-content">
+        <div class="step-title">Run AI Analysis</div>
+        <div class="step-desc">Click Analyze Inventory to see fast movers, alerts, dead stock, and suggestions.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── REQUIREMENTS ── -->
+<section id="requirements">
+  <div class="section-header">
+    <div class="section-tag">⬡ Stack</div>
+    <div class="section-title">Requirements</div>
+  </div>
+  <div class="info-grid">
+    <div class="info-item"><div class="info-dot"></div><span><strong>Frontend:</strong> Vanilla HTML5, CSS3, JavaScript</span></div>
+    <div class="info-item"><div class="info-dot"></div><span><strong>Storage:</strong> Browser LocalStorage</span></div>
+    <div class="info-item"><div class="info-dot"></div><span><strong>Backend:</strong> Optional Firebase or REST API integration</span></div>
+    <div class="info-item"><div class="info-dot"></div><span><strong>Responsive UI:</strong> CSS Grid, mobile-first</span></div>
+    <div class="info-item"><div class="info-dot"></div><span><strong>Fonts:</strong> Google Fonts (Syne + DM Sans)</span></div>
+    <div class="info-item"><div class="info-dot"></div><span><strong>AI:</strong> Client-side analysis engine</span></div>
+  </div>
+</section>
+
+<!-- ── CONSTRAINTS ── -->
+<section id="constraints">
+  <div class="section-header">
+    <div class="section-tag">⬡ Design Principles</div>
+    <div class="section-title">Constraints</div>
+  </div>
+  <div class="info-grid">
+    <div class="info-item"><div class="info-dot" style="background:var(--accent2)"></div><span><strong>Performance:</strong> Instant updates, no page reloads</span></div>
+    <div class="info-item"><div class="info-dot" style="background:var(--accent2)"></div><span><strong>Simplicity:</strong> Single-page, no build tools needed</span></div>
+    <div class="info-item"><div class="info-dot" style="background:var(--accent2)"></div><span><strong>Scalability:</strong> Handles hundreds of products via filtered rendering</span></div>
+    <div class="info-item"><div class="info-dot" style="background:var(--accent2)"></div><span><strong>Data safety:</strong> All writes to LocalStorage immediately</span></div>
+    <div class="info-item"><div class="info-dot" style="background:var(--accent2)"></div><span><strong>Accessibility:</strong> Semantic HTML, keyboard navigation</span></div>
+    <div class="info-item"><div class="info-dot" style="background:var(--accent2)"></div><span><strong>Privacy:</strong> No external data transmission</span></div>
+  </div>
+</section>
+
+<footer>
+  <p>Smart Inventory Management System · Built with HTML, CSS & JavaScript · Data stored in LocalStorage</p>
+</footer>
+
+<!-- TOAST NOTIFICATION -->
+<div id="toast"></div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <h3>✏️ Edit Product</h3>
+    <div class="form-field">
+      <label>Product Name</label>
+      <input type="text" id="edit-name" />
+    </div>
+    <div class="form-field">
+      <label>Quantity</label>
+      <input type="number" id="edit-qty" min="0" />
+    </div>
+    <div class="form-field">
+      <label>Price (₹)</label>
+      <input type="number" id="edit-price" min="0" step="0.01" />
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+<script src="project.js"></script>
+
+</body>
+</html>
